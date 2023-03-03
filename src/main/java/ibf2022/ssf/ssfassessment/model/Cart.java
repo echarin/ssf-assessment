@@ -22,7 +22,7 @@ public class Cart {
         this.items = items;
     }
 
-    public void addToCart(Item itemToAdd) {
+    public List<String> createItemNameList() {
         // Create a list of item names in current cart
         List<String> itemNames = new LinkedList<>();
 
@@ -36,6 +36,14 @@ public class Cart {
         } else {
             this.setItems(new LinkedList<>());
         }
+
+        // If cart.getItems() is null, then return empty LinkedList
+        return itemNames;
+    }
+
+    public void addToCart(Item itemToAdd) {
+        // Create a list of item names in current cart
+        List<String> itemNames = this.createItemNameList();
 
         // If this item does not exist in current cart, add it
         if (!itemNames.contains(itemToAdd.getName())) {

@@ -17,6 +17,8 @@ import ibf2022.ssf.ssfassessment.model.Cart;
 import ibf2022.ssf.ssfassessment.model.Customer;
 import ibf2022.ssf.ssfassessment.model.Item;
 import ibf2022.ssf.ssfassessment.service.CartService;
+import ibf2022.ssf.ssfassessment.service.QuotationService;
+import ibf2022.ssf.ssfassessment.model.Quotation;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -28,6 +30,9 @@ public class PurchaseOrderController {
 
     @Autowired
     private CartService cartSvc;
+
+    @Autowired
+    private QuotationService qSvc;
     
     @GetMapping(path = {"/", "index.html"})
     public String getView1(
@@ -100,6 +105,40 @@ public class PurchaseOrderController {
         if (null == customer) {
             customer = new Customer();
         }
+        
+        model.addAttribute("customer", customer);
+
+        return "view2";
+    }
+
+    @PostMapping(path = "/quotation")
+    public String postQuotation(
+        @Valid @ModelAttribute Customer customer, BindingResult result, HttpSession session,  Model model
+    ) throws Exception {
+        logger.info("Customer: %s".formatted(customer.toString()));
+
+        if (result.hasErrors()) {
+            model.addAttribute("customer", customer);
+            return "view2";
+        }
+
+        // By right, the cart should not be null
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (null == cart) {
+            cart = new Cart();
+        }
+
+        List<String> cartItemNameList = cart.createItemNameList();
+        Quotation quotation = qSvc.getQuotations(cartItemNameList);
+
+        logger.info("Quotation: %s".formatted(quotation.toString()));
+
+        // Perform business logic in Service
+        // Debugging: temporarily return view2
+        // customer = (Customer) session.getAttribute("customer");
+        // if (null == customer) {
+        //     customer = new Customer();
+        // }
         
         model.addAttribute("customer", customer);
 
