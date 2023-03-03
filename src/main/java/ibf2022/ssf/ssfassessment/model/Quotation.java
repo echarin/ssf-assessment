@@ -29,10 +29,4 @@ public class Quotation {
     public Float getQuotation(String item) {
         return this.quotations.getOrDefault((Object)item, -1000000f);
     }
-
-    // Temporary debugging: REMOVE THIS LATER
-    @Override
-    public String toString() {
-        return "Quotation [quoteId=" + quoteId + ", quotations=" + quotations + "]";
-    }
 }

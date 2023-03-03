@@ -165,7 +165,8 @@ public class PurchaseOrderController {
             return "view2";
         }
 
-        logger.info("Quotation: %s".formatted(quotation.toString()));
+        // Debugging quotation: but toString is now removed
+        // logger.info("Quotation: %s".formatted(quotation.toString()));
 
         Order order = orderSvc.createOrder(customer, cart, quotation);
 
