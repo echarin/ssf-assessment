@@ -4,16 +4,8 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>View 3</title>
-		<style>
-			.error {
-			color: red;
-			}
-		</style>
 	</head>
 	<body>
-		<!--
-			Feel free to make changes to this HTML but do no change the option in select
-		-->
 		<h1>Invoice</h1>
 		<table th:object="${order}">
             <tr>
@@ -21,7 +13,6 @@
                 <td>
                     <span th:text="${order.id}"></span>
                 </td>
-                <!-- <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" data-th-errorclass="error"/> -->
             </tr>
             <tr>
                 <td>Name:</td>
@@ -38,9 +29,11 @@
             <tr>
                 <td>Total:</td>
                 <td>
-                    <span th:text="${order.price}"></span>
+                    <p>$<span th:text="${#numbers.formatDecimal(order.price, 1, 2)}"></span></p>
                 </td>
             </tr>
 		</table>
+
+        <a href="/">Start over</a>
 	</body>
 </html>

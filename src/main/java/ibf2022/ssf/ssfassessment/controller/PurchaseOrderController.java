@@ -171,6 +171,9 @@ public class PurchaseOrderController {
 
         logger.info("Order: %s".formatted(order.toString()));
         
+        // Clear the contents of the customer's cart
+        session.removeAttribute("cart");
+
         model.addAttribute("order", order);
 
         return "view3";
