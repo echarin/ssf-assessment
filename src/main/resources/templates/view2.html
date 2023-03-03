@@ -28,6 +28,9 @@
 					</td>
 					<p data-th-if="${#fields.hasErrors('address')}" data-th-errors="*{address}" data-th-errorclass="error"/>
 				</tr>
+				<div th:if="${#fields.hasGlobalErrors()}">
+					<p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class="error"></p>
+				</div>
 			</form>
 		</table>
 
@@ -37,10 +40,6 @@
 
 			<!-- POST -->
 			<button type="submit" formaction="/quotation" formmethod="POST" form="customer-form">Checkout</button>
-		</div>
-
-		<div th:object="${quotation}">
-			<p data-th-if="${#fields.hasErrors('quotations')}" data-th-errors="*{quotations}" data-th-errorclass="error"/>
 		</div>
 	</body>
 </html>

@@ -1,6 +1,5 @@
 package ibf2022.ssf.ssfassessment.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -130,7 +128,6 @@ public class PurchaseOrderController {
         // Syntactic validation on customer
         if (result.hasErrors()) {
             model.addAttribute("customer", customer);
-            model.addAttribute("quotation", new Quotation());
             return "view2";
         }
 
@@ -148,20 +145,15 @@ public class PurchaseOrderController {
          * along with previously-filled name/address
          */
         Quotation quotation = null;
-        List<ObjectError> errors = new LinkedList<>();
-        FieldError error;
+        ObjectError error;
 
         try {
             quotation = qSvc.getQuotations(cartItemNameList);
         } catch (Exception ex) {
-            // See if you can place the error in quotation.quotations
-            error = new FieldError("quotation", "quotations", ex.getMessage());
-            errors.add(error);
-            for (ObjectError e: errors)
-                result.addError(e);
+            error = new ObjectError("customer", ex.getMessage());
+            result.addError(error);
 
             model.addAttribute("customer", customer);
-            model.addAttribute("quotation", quotation);
             return "view2";
         }
 
