@@ -14,32 +14,33 @@
 		<!--
 			Feel free to make changes to this HTML but do no change the option in select
 		-->
-		<h1>Shipping Address</h1>
-		<table>
-			<form id="customer-form" action="/" method="post" th:object="${customer}">
-				<tr>
-					<td>Name:</td>
-					<td>
-						<input type="text" name="name" size="4" placeholder="Name" th:field="*{name}">
-					</td>
-                    <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" data-th-errorclass="error"/>
-				</tr>
-				<tr>
-					<td>Address:</td>
-					<td>
-						<input type="text" name="address" size="4" placeholder="Address" th:field="*{address}">
-					</td>
-					<p data-th-if="${#fields.hasErrors('address')}" data-th-errors="*{address}" data-th-errorclass="error"/>
-				</tr>
-			</form>
+		<h1>Invoice</h1>
+		<table th:object="${order}">
+            <tr>
+                <td>Invoice id:</td>
+                <td>
+                    <span th:text="${order.id}"></span>
+                </td>
+                <!-- <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" data-th-errorclass="error"/> -->
+            </tr>
+            <tr>
+                <td>Name:</td>
+                <td>
+                    <span th:text="${order.name}"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>
+                    <span th:text="${order.address}"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Total:</td>
+                <td>
+                    <span th:text="${order.price}"></span>
+                </td>
+            </tr>
 		</table>
-
-		<div>
-			<!-- GET -->
-			<button formaction="/" formmethod="GET" form="customer-form">Back</button>
-
-			<!-- POST -->
-			<button type="submit" formaction="/quotation" formmethod="POST" form="customer-form">Checkout</button>
-		</div>
 	</body>
 </html>

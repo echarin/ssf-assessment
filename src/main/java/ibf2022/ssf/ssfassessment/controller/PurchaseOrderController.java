@@ -1,5 +1,6 @@
 package ibf2022.ssf.ssfassessment.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -7,18 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import ibf2022.ssf.ssfassessment.model.Cart;
 import ibf2022.ssf.ssfassessment.model.Customer;
 import ibf2022.ssf.ssfassessment.model.Item;
-import ibf2022.ssf.ssfassessment.service.CartService;
-import ibf2022.ssf.ssfassessment.service.QuotationService;
+import ibf2022.ssf.ssfassessment.model.Order;
 import ibf2022.ssf.ssfassessment.model.Quotation;
+import ibf2022.ssf.ssfassessment.service.CartService;
+import ibf2022.ssf.ssfassessment.service.OrderService;
+import ibf2022.ssf.ssfassessment.service.QuotationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -33,6 +37,9 @@ public class PurchaseOrderController {
 
     @Autowired
     private QuotationService qSvc;
+
+    @Autowired
+    private OrderService orderSvc;
     
     @GetMapping(path = {"/", "index.html"})
     public String getView1(
@@ -108,6 +115,9 @@ public class PurchaseOrderController {
         
         model.addAttribute("customer", customer);
 
+        // Injecting new Quotation for error display
+        model.addAttribute("quotation", new Quotation());
+
         return "view2";
     }
 
@@ -117,8 +127,10 @@ public class PurchaseOrderController {
     ) throws Exception {
         logger.info("Customer: %s".formatted(customer.toString()));
 
+        // Syntactic validation on customer
         if (result.hasErrors()) {
             model.addAttribute("customer", customer);
+            model.addAttribute("quotation", new Quotation());
             return "view2";
         }
 
@@ -129,19 +141,38 @@ public class PurchaseOrderController {
         }
 
         List<String> cartItemNameList = cart.createItemNameList();
-        Quotation quotation = qSvc.getQuotations(cartItemNameList);
+
+        /* 
+         * Semantic validation on cart is done here
+         * If QSys returns quotation error, then display the error in View 2 
+         * along with previously-filled name/address
+         */
+        Quotation quotation = null;
+        List<ObjectError> errors = new LinkedList<>();
+        FieldError error;
+
+        try {
+            quotation = qSvc.getQuotations(cartItemNameList);
+        } catch (Exception ex) {
+            // See if you can place the error in quotation.quotations
+            error = new FieldError("quotation", "quotations", ex.getMessage());
+            errors.add(error);
+            for (ObjectError e: errors)
+                result.addError(e);
+
+            model.addAttribute("customer", customer);
+            model.addAttribute("quotation", quotation);
+            return "view2";
+        }
 
         logger.info("Quotation: %s".formatted(quotation.toString()));
 
-        // Perform business logic in Service
-        // Debugging: temporarily return view2
-        // customer = (Customer) session.getAttribute("customer");
-        // if (null == customer) {
-        //     customer = new Customer();
-        // }
-        
-        model.addAttribute("customer", customer);
+        Order order = orderSvc.createOrder(customer, cart, quotation);
 
-        return "view2";
+        logger.info("Order: %s".formatted(order.toString()));
+        
+        model.addAttribute("order", order);
+
+        return "view3";
     }
 }

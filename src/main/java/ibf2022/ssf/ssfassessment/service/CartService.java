@@ -1,10 +1,10 @@
 package ibf2022.ssf.ssfassessment.service;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.HashSet;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;

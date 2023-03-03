@@ -5,17 +5,6 @@ public class Order {
     private Quotation quotation;
     private Float price;
 
-    /*
-     * Additional fields
-     * id
-     * Name
-     * Address
-     */
-
-     public String getQuoteId() {
-        return this.quotation.getQuoteId();
-    }
-
     public Customer getCustomer() {
         return customer;
     }
@@ -36,7 +25,24 @@ public class Order {
     }
 
     // Getters from dependencies
+    /*
+     * Additional fields
+     * id
+     * name
+     * address
+     */
 
+     public String getId() {
+        return this.quotation.getQuoteId();
+    }
+
+    public String getName() {
+        return this.customer.getName();
+    }
+
+    public String getAddress() {
+        return this.customer.getAddress();
+    }
 
     @Override
     public String toString() {
