@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import ibf2022.ssf.ssfassessment.model.Cart;
+import ibf2022.ssf.ssfassessment.model.Customer;
 import ibf2022.ssf.ssfassessment.model.Item;
 import ibf2022.ssf.ssfassessment.service.CartService;
 import jakarta.servlet.http.HttpSession;
@@ -69,7 +70,9 @@ public class PurchaseOrderController {
         if (!errors.isEmpty()) {
             for (ObjectError e: errors)
                 result.addError(e);
-            return "index";
+            model.addAttribute("item", item);
+            model.addAttribute("cart", cart);
+            return "view1";
         }
 
         // If item is valid, add item to cart
@@ -87,8 +90,17 @@ public class PurchaseOrderController {
     public String getView2(
         HttpSession session, Model model
     ) {
-        // 
+        // If cart is empty or null, redirect to View 1
+        Cart cart = (Cart) session.getAttribute("cart");
+        if ((null == cart) || (null == cart.getItems())) {
+            return "redirect:/";
+        }
 
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (null == customer) {
+            customer = new Customer();
+        }
+        
         model.addAttribute("customer", customer);
 
         return "view2";

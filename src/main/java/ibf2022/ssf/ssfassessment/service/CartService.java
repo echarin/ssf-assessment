@@ -15,7 +15,7 @@ import ibf2022.ssf.ssfassessment.model.Item;
 @Service
 public class CartService {
     public static final String[] ITEM_NAMES = {
-        "apple", "orange", "bread", "cheese", "chicken", "mineral water", "instant noodles"
+        "apple", "orange", "bread", "cheese", "chicken", "mineral_water", "instant_noodles"
     };
 
     public Set<String> setOfItemNames;
